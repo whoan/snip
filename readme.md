@@ -39,6 +39,7 @@ $ ./a.out
 
 ## TODO
 
+- Add support to other languages: Only is needed to change the way to comment the `snip` line. eg: *cpp -> //*, *shell -> #*
 - Add cache to avoid downloading same code over again
 - Add namespaces to avoid eventual name collapsing
 
