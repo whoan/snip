@@ -7,6 +7,10 @@ _replace_snips() {
   source_file="${1:?Missing source file as param}"
 
   mapfile -t snippets < <(grep -Po '(?<=^snip\(")[^"]+' "$source_file")
+  if (( ${#snippets[@]} == 0 )); then
+    echo $source_file
+    return
+  fi
 
   local filename=${source_file##*/}
   local extension=${source_file##*.}
