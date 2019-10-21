@@ -30,7 +30,7 @@ _replace_snips() {
 _is_text_file() {
   local filename
   filename=${1:?Missing filename by param}
-  [[ $(file -i -- "$filename" 2> /dev/null) =~ text/plain ]]
+  [[ $(file -i -- "$filename" 2> /dev/null) =~ text/ ]]
 }
 
 _is_regular_file() {
@@ -52,5 +52,6 @@ snip() {
   done
 
   echo "Execute ${params[*]}"
+  echo
   "${params[@]}"
 }
