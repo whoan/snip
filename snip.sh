@@ -11,12 +11,12 @@ replace_snips() {
   prefix_tmp=$(mktemp)
 
   while read -r snippet; do
-    echo "Downloading snippet: $snippet"
+    echo "Downloading snippet: $snippet" >&2
     new_file="$prefix_tmp-$((++i))-$filename"
     sed -r "\@$snippet@r"<( curl "$snippet" ) "$source_file" > "$new_file"
     source_file="$new_file"
-    echo "Partial output: $source_file"
-    echo
+    echo "Partial output: $source_file" >&2
+    echo >&2
   done < <(grep -Po '(?<=^snip\()[^)]+' "$source_file")
 
   output_file=$prefix_tmp${extension:+.$extension}
