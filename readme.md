@@ -8,7 +8,8 @@ Add code snippets to your code directly from the www.
 
 ```bash
 # download script and place it in your initialization file
-curl --fail "https://raw.githubusercontent.com/whoan/snip/master/snip.sh" > snip.sh && echo "[ -f \"$PWD/\"snip.sh ] && source \"$PWD/\"snip.sh" >> .bashrc
+curl --fail "https://raw.githubusercontent.com/whoan/snip/master/snip.sh" > snip.sh &&
+  echo "[ -f \"$PWD/\"snip.sh ] && source \"$PWD/\"snip.sh" >> .bashrc
 # start a new session to take changes
 bash
 ```
