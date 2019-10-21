@@ -5,20 +5,23 @@
 _replace_snips() {
   local source_file
   source_file="${1:?Missing source file as param}"
+
+  mapfile -t snippets < <(grep -Po '(?<=^snip\(")[^"]+' "$source_file")
+
   local filename=${source_file##*/}
   local extension=${source_file##*.}
   local prefix_tmp
   prefix_tmp=$(mktemp)
-
   local i=0
-  while read -r snippet; do
+
+  for snippet in "${snippets[@]}"; do
     echo "Downloading snippet: $snippet" >&2
     new_file="$prefix_tmp-$((++i))-$filename"
     sed -r "\@$snippet@r"<( curl "$snippet" ) "$source_file" > "$new_file"
     source_file="$new_file"
     echo "Partial output: $source_file" >&2
     echo >&2
-  done < <(grep -Po '(?<=^snip\(")[^"]+' "$source_file")
+  done
 
   local output_file=$prefix_tmp${extension:+.$extension}
   rm $prefix_tmp
@@ -27,16 +30,16 @@ _replace_snips() {
   echo "$output_file"
 }
 
-_is_text_file() {
-  local filename
-  filename=${1:?Missing filename by param}
-  [[ $(file -i -- "$filename" 2> /dev/null) =~ text/ ]]
-}
-
 _is_regular_file() {
   local filename
   filename=${1:?Missing filename by param}
   [ -f "$filename" ]
+}
+
+_is_text_file() {
+  local filename
+  filename=${1:?Missing filename by param}
+  _is_regular_file "$filename" && [[ $(file -i -- "$filename" 2> /dev/null) =~ text/ ]]
 }
 
 snip() {
@@ -45,10 +48,9 @@ snip() {
   for (( i=0; i < ${#params[@]}; ++i )); do
     # only valid files are processed
     param="${params[$i]}"
-    if ! _is_regular_file "$param" || ! _is_text_file "$param"; then
-      continue
+    if _is_text_file "$param"; then
+      params[$i]=$(_replace_snips "$param")
     fi
-    params[$i]=$(_replace_snips "$param")
   done
 
   echo "Execute ${params[*]}"
