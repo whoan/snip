@@ -6,6 +6,7 @@ replace_snips() {
   local source_file
   source_file="${1:?Missing source file as param}"
   local filename=${source_file##*/}
+  local extension=${source_file##*.}
   local prefix_tmp
   prefix_tmp=$(mktemp)
 
@@ -18,9 +19,11 @@ replace_snips() {
     echo
   done < <(grep -Po '(?<=^snip\()[^)]+' "$source_file")
 
-  sed 's@^[ \t]*snip@//snip@;' "$source_file" > $prefix_tmp
-  rm $prefix_tmp?*
-  echo "Output: $prefix_tmp"
+  output_file=$prefix_tmp${extension:+.$extension}
+  rm $prefix_tmp
+  sed 's@^[ \t]*snip@//snip@;' "$source_file" > "$output_file"
+  rm $prefix_tmp-*
+  echo "$output_file"
 }
 
 replace_snips "$@"
