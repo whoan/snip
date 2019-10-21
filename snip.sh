@@ -21,7 +21,7 @@ _replace_snips() {
   for snippet in "${snippets[@]}"; do
     echo "Downloading snippet: $snippet" >&2
     new_file="$prefix_tmp-$((++i))-$filename"
-    sed -r "\@$snippet@r"<( curl "$snippet" ) "$source_file" > "$new_file"
+    sed -r "\@$snippet@r"<( curl "$snippet" 2> /dev/null ) "$source_file" > "$new_file" || return 1
     source_file="$new_file"
     echo "Partial output: $source_file" >&2
     echo >&2
@@ -53,7 +53,7 @@ snip() {
     # only valid files are processed
     param="${params[$i]}"
     if _is_text_file "$param"; then
-      params[$i]=$(_replace_snips "$param")
+      params[$i]=$(_replace_snips "$param") || return 1
     fi
   done
 
