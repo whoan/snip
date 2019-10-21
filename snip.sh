@@ -2,7 +2,7 @@
 
 # TODO: use cache
 
-replace_snips() {
+_replace_snips() {
   local source_file
   source_file="${1:?Missing source file as param}"
   local filename=${source_file##*/}
@@ -27,4 +27,17 @@ replace_snips() {
   echo "$output_file"
 }
 
-replace_snips "$@"
+snip() {
+  declare -a params=( "$@" )
+  local i
+  for (( i=0; i < ${#params[@]}; ++i )); do
+    # only valid files are processed
+    if ! [ -f "${params[$i]}" ] || ! [[ $(file -i -- "${params[$i]}" 2> /dev/null) =~ text/plain ]]; then
+      continue
+    fi
+    params[$i]=$(_replace_snips "${params[$i]}")
+  done
+
+  echo "Execute ${params[*]}"
+  "${params[@]}"
+}
