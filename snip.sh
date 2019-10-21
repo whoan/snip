@@ -2,6 +2,14 @@
 
 # TODO: use cache
 
+__snip__comment_out_snip_line() {
+  local source_file
+  source_file="${1:?Missing source file as param}"
+
+  cpp_comment="//"
+  sed "s@^[ \t]*snip@${cpp_comment}snip@" "$source_file"
+}
+
 __snip__replace_snips() {
   local source_file
   source_file="${1:?Missing source file as param}"
@@ -28,7 +36,8 @@ __snip__replace_snips() {
 
   local output_file=$prefix_tmp${extension:+.$extension}
   rm $prefix_tmp
-  sed 's@^[ \t]*snip@//snip@;' "$source_file" > "$output_file"
+
+  __snip__comment_out_snip_line "$source_file" > "$output_file"
   rm $prefix_tmp-*
   echo "$output_file"
 }
