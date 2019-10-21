@@ -27,15 +27,28 @@ _replace_snips() {
   echo "$output_file"
 }
 
+_is_text_file() {
+  local filename
+  filename=${1:?Missing filename by param}
+  [[ $(file -i -- "$filename" 2> /dev/null) =~ text/plain ]]
+}
+
+_is_regular_file() {
+  local filename
+  filename=${1:?Missing filename by param}
+  [ -f "$filename" ]
+}
+
 snip() {
   declare -a params=( "$@" )
   local i
   for (( i=0; i < ${#params[@]}; ++i )); do
     # only valid files are processed
-    if ! [ -f "${params[$i]}" ] || ! [[ $(file -i -- "${params[$i]}" 2> /dev/null) =~ text/plain ]]; then
+    param="${params[$i]}"
+    if ! _is_regular_file "$param" || ! _is_text_file "$param"; then
       continue
     fi
-    params[$i]=$(_replace_snips "${params[$i]}")
+    params[$i]=$(_replace_snips "$param")
   done
 
   echo "Execute ${params[*]}"
