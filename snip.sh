@@ -2,7 +2,7 @@
 
 # TODO: use cache
 
-_replace_snips() {
+__snip__replace_snips() {
   local source_file
   source_file="${1:?Missing source file as param}"
 
@@ -33,16 +33,16 @@ _replace_snips() {
   echo "$output_file"
 }
 
-_is_regular_file() {
+__snip__is_regular_file() {
   local filename
   filename=${1:?Missing filename by param}
   [ -f "$filename" ]
 }
 
-_is_text_file() {
+__snip__is_text_file() {
   local filename
   filename=${1:?Missing filename by param}
-  _is_regular_file "$filename" && [[ $(file -i -- "$filename" 2> /dev/null) =~ text/ ]]
+  __snip__is_regular_file "$filename" && [[ $(file -i -- "$filename" 2> /dev/null) =~ text/ ]]
 }
 
 snip() {
@@ -51,8 +51,8 @@ snip() {
   for (( i=0; i < ${#params[@]}; ++i )); do
     # only valid files are processed
     param="${params[$i]}"
-    if _is_text_file "$param"; then
-      params[$i]=$(_replace_snips "$param") || return 1
+    if __snip__is_text_file "$param"; then
+      params[$i]=$(__snip__replace_snips "$param") || return 1
     fi
   done
 
