@@ -16,7 +16,7 @@ replace_snips() {
     source_file="$new_file"
     echo "Partial output: $source_file"
     echo
-  done < <(grep -Po '(?<=snip\()[^)]+' "$source_file")
+  done < <(grep -Po '(?<=^snip\()[^)]+' "$source_file")
 
   sed 's@^[ \t]*snip@//snip@;' "$source_file" > $prefix_tmp
   rm $prefix_tmp?*
