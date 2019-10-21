@@ -20,10 +20,9 @@ _replace_snips() {
 
   for snippet in "${snippets[@]}"; do
     echo "Downloading snippet: $snippet" >&2
-    new_file="$prefix_tmp-$((++i))-$filename"
+    new_file=$prefix_tmp-$((++i))-$filename
     sed -r "\@$snippet@r"<( curl "$snippet" 2> /dev/null ) "$source_file" > "$new_file" || return 1
     source_file="$new_file"
-    echo "Partial output: $source_file" >&2
     echo >&2
   done
 
@@ -57,7 +56,7 @@ snip() {
     fi
   done
 
-  echo "Execute ${params[*]}"
+  echo "Running: ${params[*]}"
   echo
   "${params[@]}"
 }
