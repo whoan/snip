@@ -10,6 +10,7 @@ replace_snips() {
   local prefix_tmp
   prefix_tmp=$(mktemp)
 
+  local i=0
   while read -r snippet; do
     echo "Downloading snippet: $snippet" >&2
     new_file="$prefix_tmp-$((++i))-$filename"
@@ -19,7 +20,7 @@ replace_snips() {
     echo >&2
   done < <(grep -Po '(?<=^snip\()[^)]+' "$source_file")
 
-  output_file=$prefix_tmp${extension:+.$extension}
+  local output_file=$prefix_tmp${extension:+.$extension}
   rm $prefix_tmp
   sed 's@^[ \t]*snip@//snip@;' "$source_file" > "$output_file"
   rm $prefix_tmp-*
