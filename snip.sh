@@ -18,7 +18,7 @@ _replace_snips() {
     source_file="$new_file"
     echo "Partial output: $source_file" >&2
     echo >&2
-  done < <(grep -Po '(?<=^snip\()[^)]+' "$source_file")
+  done < <(grep -Po '(?<=^snip\(")[^"]+' "$source_file")
 
   local output_file=$prefix_tmp${extension:+.$extension}
   rm $prefix_tmp
