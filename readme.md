@@ -44,3 +44,7 @@ $ ./a.out
 ## Final notes
 
 I created this script to reuse code with ease while I pracice coding or I need to have something running ASAP. It is not production ready... unless you know what you are doing.
+
+## License
+
+[MIT](https://github.com/whoan/snip/blob/master/LICENSE)
