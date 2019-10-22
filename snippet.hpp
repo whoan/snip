@@ -1,5 +1,5 @@
-#ifndef _SNIP_EXAMPLE_HPP
-#define _SNIP_EXAMPLE_HPP
+#ifndef _SNIPPET_HPP
+#define _SNIPPET_HPP
 
 #include <iostream>
 
