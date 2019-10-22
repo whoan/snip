@@ -14,6 +14,12 @@ curl --fail "https://raw.githubusercontent.com/whoan/snip/master/snip.sh" > snip
 bash
 ```
 
+## Usage
+
+Just add `snip("$url")` anywhere in your code and the retrieved content will be placed after that line.
+
+Yoy can write your *snip line* as a comment to avoid your linter complaining about syntax (it will work the same).
+
 ## Examples
 
 ### C++
