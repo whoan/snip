@@ -45,7 +45,6 @@ $ cat examples/main.sh
 ```
 ```bash
 snip("https://raw.githubusercontent.com/whoan/snip/master/examples/snippet.sh")
-
 say_hello
 ```
 
@@ -61,7 +60,6 @@ $ cat examples/main.py
 ```
 ```python
 snip("https://raw.githubusercontent.com/whoan/snip/master/examples/snippet.py")
-
 say_hello()
 ```
 
@@ -73,7 +71,6 @@ $ snip python examples/main.py
 ## TODO
 
 - Add cache to avoid downloading same code over again
-- Add namespaces to avoid eventual name collapsing
 
 ## Final notes
 
