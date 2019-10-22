@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
-snip("https://raw.githubusercontent.com/whoan/snip/master/snippet.sh")
+snip("https://raw.githubusercontent.com/whoan/snip/master/examples/snippet.sh")
 
 say_hello

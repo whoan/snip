@@ -1,4 +1,4 @@
-snip("https://raw.githubusercontent.com/whoan/snip/master/snippet.hpp")
+snip("https://raw.githubusercontent.com/whoan/snip/master/examples/snippet.hpp")
 
 int main() {
   say_hello();
