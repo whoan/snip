@@ -24,8 +24,7 @@ Let's compile *main.cpp* prefixed with `snip`:
 $ cat examples/main.cpp
 ```
 ```cpp
-snip("https://raw.githubusercontent.com/whoan/snip/master/examples/snippet.hpp")
-
+//snip("https://raw.githubusercontent.com/whoan/snip/master/examples/snippet.hpp")
 int main() {
   say_hello();
   return 0;
@@ -33,8 +32,7 @@ int main() {
 ```
 
 ```bash
-$ snip g++ examples/main.cpp
-$ ./a.out
+$ snip g++ examples/main.cpp && ./a.out
 > Hello World
 ```
 
@@ -44,7 +42,7 @@ $ ./a.out
 $ cat examples/main.sh
 ```
 ```bash
-snip("https://raw.githubusercontent.com/whoan/snip/master/examples/snippet.sh")
+#snip("https://raw.githubusercontent.com/whoan/snip/master/examples/snippet.sh")
 say_hello
 ```
 
@@ -59,7 +57,7 @@ $ snip bash examples/main.sh
 $ cat examples/main.py
 ```
 ```python
-snip("https://raw.githubusercontent.com/whoan/snip/master/examples/snippet.py")
+#snip("https://raw.githubusercontent.com/whoan/snip/master/examples/snippet.py")
 say_hello()
 ```
 
