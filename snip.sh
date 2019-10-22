@@ -63,7 +63,7 @@ snip() {
     fi
   done
 
-  echo "Running: ${params[*]}"
-  echo
+  echo "Running: ${params[*]}" >&2
+  echo >&2
   "${params[@]}"
 }
