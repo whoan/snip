@@ -56,6 +56,22 @@ $ snip bash examples/main.sh
 > Hello World
 ```
 
+### Python
+
+```bash
+$ cat examples/main.py
+```
+```python
+snip("https://raw.githubusercontent.com/whoan/snip/master/snippet.py")
+
+say_hello()
+```
+
+```bash
+$ snip python examples/main.py
+> Hello World
+```
+
 ## TODO
 
 - Add cache to avoid downloading same code over again
