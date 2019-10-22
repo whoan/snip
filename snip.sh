@@ -19,7 +19,8 @@ __snip__replace_snips() {
   fi
 
   local filename=${source_file##*/}
-  local extension=${source_file##*.}
+  local root_filename="${filename%.*}"
+  local extension="${filename#"$root_filename"}"
   local prefix_tmp
   prefix_tmp=$(mktemp)
   local i=0
@@ -32,7 +33,7 @@ __snip__replace_snips() {
     echo >&2
   done
 
-  local output_file=$prefix_tmp${extension:+.$extension}
+  local output_file=${prefix_tmp}${extension}
   rm $prefix_tmp
   __snip__remove_snip_line "$source_file" > "$output_file"
   rm $prefix_tmp-*
