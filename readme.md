@@ -72,6 +72,22 @@ $ snip python examples/main.py
 > Hello World
 ```
 
+### Docker
+
+```bash
+$ cat examples/Dockerfile
+```
+```
+FROM alpine
+#snip("https://raw.githubusercontent.com/whoan/snip/master/examples/snippet.dockerfile")
+CMD sh say_hello.sh
+```
+
+```bash
+$ snip docker build -q -t snip-docker -f examples/Dockerfile . && docker run snip-docker
+> Hello World
+```
+
 ## TODO
 
 - Add cache to avoid downloading same code over again
