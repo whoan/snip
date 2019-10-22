@@ -21,7 +21,7 @@ bash
 Let's compile *main.cpp* (included in this repo) prefixed with `snip`:
 
 ```bash
-$ cat main.cpp
+$ cat examples/main.cpp
 ```
 ```cpp
 snip("https://raw.githubusercontent.com/whoan/snip/master/snippet.hpp")
@@ -33,7 +33,7 @@ int main() {
 ```
 
 ```bash
-$ snip g++ main.cpp
+$ snip g++ examples/main.cpp
 $ ./a.out
 > Hello World
 ```
