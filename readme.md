@@ -38,6 +38,24 @@ $ ./a.out
 > Hello World
 ```
 
+### Bash
+
+```bash
+$ cat examples/main.sh
+```
+```
+#!/usr/bin/env bash
+
+snip("https://raw.githubusercontent.com/whoan/snip/master/snippet.sh")
+
+say_hello
+```
+
+```bash
+$ snip bash examples/main.sh
+> Hello World
+```
+
 ## TODO
 
 - Add cache to avoid downloading same code over again
