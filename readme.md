@@ -18,7 +18,7 @@ bash
 
 ### C++
 
-Let's compile *main.cpp* (included in this repo) prefixed with `snip`:
+Let's compile *main.cpp* prefixed with `snip`:
 
 ```bash
 $ cat examples/main.cpp
@@ -63,7 +63,7 @@ $ snip bash examples/main.sh
 
 ## Final notes
 
-I created this script to reuse code with ease while I pracice coding or I need to have something running ASAP. It is not production ready... unless you know what you are doing.
+I created this script to reuse code with ease. It is not production ready... unless you know what you are doing.
 
 ## License
 
