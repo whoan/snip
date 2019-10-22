@@ -1,6 +1,6 @@
 # Snip
 
-Add code snippets to your code directly from the www.
+Add code snippets to your code directly from the web.
 
 ## Installation
 
@@ -18,10 +18,13 @@ bash
 
 ### C++
 
-Let *file.cpp* have the content:
+Let's compile *main.cpp* (included in this repo) prefixed with `snip`:
 
+```bash
+$ cat main.cpp
+```
 ```cpp
-snip("https://raw.githubusercontent.com/whoan/snip/master/example.hpp")
+snip("https://raw.githubusercontent.com/whoan/snip/master/snippet.hpp")
 
 int main() {
   say_hello();
@@ -29,10 +32,8 @@ int main() {
 }
 ```
 
-Prefix your compile line with `snip`:
-
 ```bash
-$ snip g++ file.cpp
+$ snip g++ main.cpp
 $ ./a.out
 > Hello World
 ```
