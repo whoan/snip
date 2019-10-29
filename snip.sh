@@ -24,11 +24,17 @@ __snip__replace_snips() {
   local prefix_tmp
   prefix_tmp=$(mktemp)
   local i=0
+ 
+  mkdir -p ~/.snip/cache/
 
   for snippet in "${snippets[@]}"; do
-    echo "Downloading snippet: $snippet" >&2
+    sniphash=$(echo -ne $snippet|md5sum|cut -d' ' -f1)
     new_file=$prefix_tmp-$((++i))-$filename
-    sed -r "\@$snippet@r"<( curl "$snippet" 2> /dev/null ) "$source_file" > "$new_file" || return 1
+    if [ ! -f ~/.snip/cache/${sniphash} ];then
+	echo "Downloading snippet: $snippet" >&2
+	curl "$snippet"	> ~/.snip/cache/${sniphash} 2> /dev/null 
+    fi
+    sed -r "\@$snippet@r"<( cat ~/.snip/cache/${sniphash} 2> /dev/null ) "$source_file" > "$new_file" || return 1
     source_file="$new_file"
     echo >&2
   done
