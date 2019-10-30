@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-# TODO: use cache
-
 __snip__remove_snip_line() {
   local source_file
   source_file="${1:?Missing source file as param}"
@@ -25,16 +23,16 @@ __snip__replace_snips() {
   prefix_tmp=$(mktemp)
   local i=0
  
-  mkdir -p ~/.snip/cache/
+  mkdir -p ~/.cache/snip/
 
   for snippet in "${snippets[@]}"; do
     sniphash=$(echo -ne $snippet|md5sum|cut -d' ' -f1)
     new_file=$prefix_tmp-$((++i))-$filename
-    if [ ! -f ~/.snip/cache/${sniphash} ];then
+    if [ ! -f ~/.cache/snip/${sniphash} ];then
 	echo "Downloading snippet: $snippet" >&2
-	curl "$snippet"	> ~/.snip/cache/${sniphash} 2> /dev/null 
+	curl "$snippet"	> ~/.cache/snip/${sniphash} 2> /dev/null 
     fi
-    sed -r "\@$snippet@r"<( cat ~/.snip/cache/${sniphash} 2> /dev/null ) "$source_file" > "$new_file" || return 1
+    sed -r "\@$snippet@r"<( cat ~/.cache/snip/${sniphash} 2> /dev/null ) "$source_file" > "$new_file" || return 1
     source_file="$new_file"
     echo >&2
   done
