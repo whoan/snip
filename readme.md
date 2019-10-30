@@ -90,7 +90,7 @@ $ snip docker build -q -t snip-docker -f examples/Dockerfile . && docker run sni
 
 ## TODO
 
-- ~Add cache to avoid downloading same code over again~ (Thanks [@sapgan](https://github.com/sapgan))
+- ~Add cache to avoid downloading same code over again~ (Thanks [@sapgan](https://github.com/sapgan) and [@danstewart](https://github.com/danstewart))
 
 ## Final notes
 
