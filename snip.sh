@@ -34,7 +34,6 @@ __snip__replace_snips() {
     fi
     sed -r "\@$snippet@r"<( cat ~/.cache/snip/${sniphash} 2> /dev/null ) "$source_file" > "$new_file" || return 1
     source_file="$new_file"
-    echo >&2
   done
 
   local output_file=${prefix_tmp}${extension}
