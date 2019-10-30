@@ -8,7 +8,9 @@ __snip__remove_snip_line() {
 
 __snip__replace_snips() {
   local source_file
+  local force
   source_file="${1:?Missing source file as param}"
+  force=$2
 
   mapfile -t snippets < <(grep -Po '(^|(?<=[^[:alnum:]]))(?<=snip\(")[^"]+' "$source_file")
   if (( ${#snippets[@]} == 0 )); then
@@ -28,10 +30,12 @@ __snip__replace_snips() {
   for snippet in "${snippets[@]}"; do
     sniphash=$(echo -ne $snippet|md5sum|cut -d' ' -f1)
     new_file=$prefix_tmp-$((++i))-$filename
-    if [ ! -f ~/.cache/snip/${sniphash} ];then
+
+    if [[ $force == 1 || ! -f ~/.cache/snip/${sniphash} ]]; then
       echo "Downloading snippet: $snippet" >&2
-      curl "$snippet" > ~/.cache/snip/${sniphash} 2> /dev/null
+      curl "$snippet"	-o ~/.cache/snip/${sniphash} 2> /dev/null
     fi
+
     sed -r "\@$snippet@r"<( cat ~/.cache/snip/${sniphash} 2> /dev/null ) "$source_file" > "$new_file" || return 1
     source_file="$new_file"
   done
@@ -57,13 +61,20 @@ __snip__is_text_file() {
 }
 
 snip() {
+  local force
+  if [[ $1 == '-f' || $1 == '--force' ]]; then
+    force=1
+    shift
+  fi
+
   declare -a params=( "$@" )
   local i
+
   for (( i=0; i < ${#params[@]}; ++i )); do
     # only valid files are processed
     param="${params[$i]}"
     if __snip__is_text_file "$param"; then
-      params[$i]=$(__snip__replace_snips "$param") || return 1
+      params[$i]=$(__snip__replace_snips "$param" $force) || return 1
     fi
   done
 
