@@ -25,7 +25,7 @@ __snip__replace_snips() {
   local prefix_tmp
   prefix_tmp=$(mktemp)
   local i=0
- 
+
   mkdir -p ~/.cache/snip/
 
   for snippet in "${snippets[@]}"; do
@@ -39,7 +39,6 @@ __snip__replace_snips() {
 
     sed -r "\@$snippet@r"<( cat ~/.cache/snip/${sniphash} 2> /dev/null ) "$source_file" > "$new_file" || return 1
     source_file="$new_file"
-    echo >&2
   done
 
   local output_file=${prefix_tmp}${extension}
