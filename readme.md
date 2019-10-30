@@ -16,9 +16,14 @@ bash
 
 ## Usage
 
-Just add `snip("$url")` anywhere in your code and the retrieved content will be placed after that line.
+- Add `snip("$url")` (a.k.a. *the snip line*) anywhere in your code (usually as a comment) and the retrieved content will be placed after that line.
+- Prepend any command with `snip` (eg: `snip bash script.sh`) and the *snip lines* (if any) in *script.sh* will be replaced with the content retrieved from the url provided.
 
-Yoy can write your *snip line* as a comment to avoid your linter complaining about syntax (it will work the same).
+> Adding your *snip line* as a comment avoids your linter to complain about syntax (it works the same).
+
+### Optional Parameters
+
+- You can provide the `-f/--force` flag to force downloading the content regardless of it being present in the cache (*~/.cache/snip*). The cache will be updated with new content.
 
 ## Examples
 
