@@ -61,6 +61,19 @@ __snip__is_text_file() {
 }
 
 snip() {
+  if (( ${#@} == 0 )) || [[ $1 == '-h' ]] || [[ $1 == '--help' ]]; then
+    cat >&2 <<EOF
+Usage: snip [options] <arguments...>
+Options:
+  -h, --help    This help
+  -f, --force   Force to download content from url bypassing (though updating) cache
+
+Example:
+  snip gcc source_file_with_snips.c  # more examples: https://github.com/whoan/snip/blob/master/readme.md
+EOF
+    return 1
+  fi
+
   local force
   if [[ $1 == '-f' || $1 == '--force' ]]; then
     force=1
