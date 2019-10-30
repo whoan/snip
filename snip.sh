@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-# Flag to ignore cache
-force=0
-
 __snip__remove_snip_line() {
   local source_file
   source_file="${1:?Missing source file as param}"
@@ -11,7 +8,9 @@ __snip__remove_snip_line() {
 
 __snip__replace_snips() {
   local source_file
+  local force
   source_file="${1:?Missing source file as param}"
+  force=$2
 
   mapfile -t snippets < <(grep -Po '(^|(?<=[^[:alnum:]]))(?<=snip\(")[^"]+' "$source_file")
   if (( ${#snippets[@]} == 0 )); then
@@ -62,6 +61,7 @@ __snip__is_text_file() {
 }
 
 snip() {
+  local force
   if [[ $1 == '-f' || $1 == '--force' ]]; then
     force=1
     shift
@@ -74,7 +74,7 @@ snip() {
     # only valid files are processed
     param="${params[$i]}"
     if __snip__is_text_file "$param"; then
-      params[$i]=$(__snip__replace_snips "$param") || return 1
+      params[$i]=$(__snip__replace_snips "$param" $force) || return 1
     fi
   done
 
