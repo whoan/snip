@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-# TODO: use cache
-
 __snip__remove_snip_line() {
   local source_file
   source_file="${1:?Missing source file as param}"
