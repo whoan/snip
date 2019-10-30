@@ -36,7 +36,7 @@ __snip__replace_snips() {
       curl "$snippet"	-o ~/.cache/snip/${sniphash} 2> /dev/null
     fi
 
-    sed -r "\@$snippet@r"<( cat ~/.cache/snip/${sniphash} 2> /dev/null ) "$source_file" > "$new_file" || return 1
+    sed -r "\@$snippet@r"<( cat ~/.cache/snip/${sniphash} ) "$source_file" > "$new_file" || return 1
     source_file="$new_file"
   done
 
@@ -92,6 +92,5 @@ EOF
   done
 
   echo "Running: ${params[*]}" >&2
-  echo >&2
   "${params[@]}"
 }
