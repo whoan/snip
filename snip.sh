@@ -22,7 +22,7 @@ __snip__replace_snips() {
   local root_filename="${filename%.*}"
   local extension="${filename#"$root_filename"}"
   local prefix_tmp
-  prefix_tmp=$(mktemp)
+  prefix_tmp=$(command -p mktemp) || return 1
   local i=0
 
   mkdir -p ~/.cache/snip/
@@ -41,9 +41,9 @@ __snip__replace_snips() {
   done
 
   local output_file=${prefix_tmp}${extension}
-  rm $prefix_tmp
+  rm "$prefix_tmp"
   __snip__remove_snip_line "$source_file" > "$output_file"
-  rm $prefix_tmp-*
+  rm "$prefix_tmp"-*
 
   echo "$output_file"
 }
