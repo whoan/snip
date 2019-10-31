@@ -25,18 +25,19 @@ __snip__replace_snips() {
   prefix_tmp=$(command -p mktemp) || return 1
   local i=0
 
-  mkdir -p ~/.cache/snip/
+  local cache_dir=~/.cache/snip
+  mkdir -p "$cache_dir"/
 
   for snippet in "${snippets[@]}"; do
     sniphash=$(echo -ne $snippet|md5sum|cut -d' ' -f1)
     new_file=$prefix_tmp-$((++i))-$filename
 
-    if [[ $force == 1 || ! -f ~/.cache/snip/${sniphash} ]]; then
+    if [[ $force == 1 || ! -f "$cache_dir"/${sniphash} ]]; then
       echo "Downloading snippet: $snippet" >&2
-      curl "$snippet"	-o ~/.cache/snip/${sniphash} 2> /dev/null
+      curl "$snippet"	-o "$cache_dir"/${sniphash} 2> /dev/null
     fi
 
-    sed -r "\@$snippet@r"<( cat ~/.cache/snip/${sniphash} ) "$source_file" > "$new_file" || return 1
+    sed -r "\@$snippet@r"<( cat "$cache_dir"/${sniphash} ) "$source_file" > "$new_file" || return 1
     source_file="$new_file"
   done
 
@@ -66,7 +67,7 @@ snip() {
 Usage: snip [options] <arguments...>
 Options:
   -h, --help    This help
-  -f, --force   Force to download content from url bypassing (though updating) cache
+  -f, --force   Force to download content from url bypassing (and updating) cache
 
 Example:
   snip gcc source_file_with_snips.c  # more examples: https://github.com/whoan/snip/blob/master/readme.md
