@@ -34,7 +34,7 @@ __snip__replace_snips() {
 
     if [[ $force == 1 || ! -f "$cache_dir"/${sniphash} ]]; then
       echo "Downloading snippet: $snippet" >&2
-      curl "$snippet"	-o "$cache_dir"/${sniphash} 2> /dev/null
+      curl --silent "$snippet" -o "$cache_dir"/${sniphash}
     fi
 
     sed -r "\@$snippet@r"<( cat "$cache_dir"/${sniphash} ) "$source_file" > "$new_file" || return 1
