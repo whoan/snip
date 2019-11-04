@@ -14,6 +14,10 @@ curl --fail "https://raw.githubusercontent.com/whoan/snip/master/snip.sh" > snip
 bash
 ```
 
+### Dependencies
+
+- `curl` to download snippets
+
 ## Usage
 
 - Add `snip("$url")` (a.k.a. *the snip line*) anywhere in your code (usually as a comment) and the retrieved content will be placed after that line.
