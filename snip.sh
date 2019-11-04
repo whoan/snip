@@ -61,7 +61,8 @@ __snip__is_text_file() {
   __snip__is_regular_file "$filename" && [[ $(file -i -- "$filename" 2> /dev/null) =~ text/ ]]
 }
 
-snip() {
+__snip__can_run() {
+
   if (( ${#@} == 0 )) || [[ $1 == '-h' ]] || [[ $1 == '--help' ]]; then
     cat >&2 <<EOF
 Usage: snip [options] <arguments...>
@@ -79,6 +80,10 @@ EOF
     echo "You need 'curl' to run this script" >&2
     return 1
   fi
+}
+
+snip() {
+  __snip__can_run "$@" || return 1
 
   local force
   if [[ $1 == '-f' || $1 == '--force' ]]; then
