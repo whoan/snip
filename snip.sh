@@ -6,6 +6,7 @@ __snip__remove_snip_line() {
   sed "/^[ \t]*snip/d" "$source_file"
 }
 
+
 __snip__replace_snips() {
   local source_file
   local force
@@ -35,6 +36,10 @@ __snip__replace_snips() {
     if [[ $force == 1 || ! -f "$cache_dir"/${sniphash} ]]; then
       echo "Downloading snippet: $snippet" >&2
       curl --silent "$snippet" -o "$cache_dir"/${sniphash}
+      if [[ $(cut -f1 -d: "$cache_dir/${sniphash}") == 404 ]]; then
+        echo "Error downloading snippet: $snippet" >&2
+        return 1
+      fi
     fi
 
     sed -r "\@$snippet@r"<( cat "$cache_dir"/${sniphash} ) "$source_file" > "$new_file" || return 1
@@ -55,11 +60,13 @@ __snip__is_regular_file() {
   [ -f "$filename" ]
 }
 
+
 __snip__is_text_file() {
   local filename
   filename=${1:?Missing filename by param}
   __snip__is_regular_file "$filename" && [[ $(file -i -- "$filename" 2> /dev/null) =~ text/ ]]
 }
+
 
 __snip__can_run() {
 
@@ -81,6 +88,7 @@ EOF
     return 1
   fi
 }
+
 
 snip() {
   __snip__can_run "$@" || return 1
