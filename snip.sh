@@ -10,7 +10,6 @@ __snip__remove_snip_line() {
 __snip__get_snippet_fq_name() {
   local snippet
   snippet="${1:?Missing snippet as param}"
-  local config_file=~/.config/snip/settings.ini
 
   # snippet is already fully qualified, nothing else to do
   if [[ $snippet =~ ^http ]]; then
@@ -19,6 +18,7 @@ __snip__get_snippet_fq_name() {
     return 0
   fi
 
+  local config_file=~/.config/snip/settings.ini
   if [ ! -f "$config_file" ]; then
     echo "Snippet is not fully qualified and there is no setting file ($config_file) with 'base_url' set." >&2
     return 1
