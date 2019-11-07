@@ -4,6 +4,10 @@ Add code snippets to your code directly from the web.
 
 ## Installation
 
+### Dependencies
+
+- `curl` to download snippets
+
 ### Bash
 
 ```bash
@@ -14,20 +18,45 @@ curl --fail "https://raw.githubusercontent.com/whoan/snip/master/snip.sh" > snip
 bash
 ```
 
-### Dependencies
-
-- `curl` to download snippets
-
 ## Usage
 
 - Add `snip("$url")` (a.k.a. *the snip line*) anywhere in your code (usually as a comment) and the retrieved content will be placed after that line.
-- Prepend any command with `snip` (eg: `snip bash script.sh`) and the *snip lines* (if any) in *script.sh* will be replaced with the content retrieved from the url provided.
+- Prepend any command with `snip` (eg: `snip bash script.sh`) and the *snip lines* (if any) will be replaced with the content retrieved from the url provided.
 
 > Adding your *snip line* as a comment avoids your linter to complain about syntax (it works the same).
 
 ### Optional Parameters
 
 - You can provide the `-f/--force` flag to force downloading the content regardless of it being present in the cache (*~/.cache/snip*). The cache will be updated with new content.
+
+### Settings
+
+You can set the following in `~/.config/snip/settings.ini`:
+
+- `base_url`: Specify a url to shorten the *snip line* in your code.
+
+
+    Example:
+
+    ```bash
+    $ cat ~/.config/snip/settings.ini
+
+    ```
+    ```
+    base_url=https://raw.githubusercontent.com/whoan/snippets/master/cpp/
+    ```
+
+    Now, you can write this snip line in your code:
+
+    ```cpp
+    //snip("print.hpp")
+    ```
+
+    Instead of this:
+
+    ```cpp
+    //snip("https://raw.githubusercontent.com/whoan/snippets/master/cpp/print.hpp")
+    ```
 
 ## Examples
 
@@ -100,6 +129,7 @@ $ snip docker build -q -t snip-docker -f examples/Dockerfile . && docker run sni
 ## TODO
 
 - ~Add cache to avoid downloading same code over again~ (Thanks [@sapgan](https://github.com/sapgan) and [@danstewart](https://github.com/danstewart))
+- ~Allow setting base_url in a file to shorten snip line~
 
 ## Final notes
 
