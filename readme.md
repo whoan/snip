@@ -60,6 +60,8 @@ You can set the following in `~/.config/snip/settings.ini`:
 
 ## Examples
 
+It works with **any** type of file. Feel free to add examples through PRs.
+
 ### C++
 
 Let's compile *main.cpp* prefixed with `snip`:
