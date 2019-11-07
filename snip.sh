@@ -7,6 +7,34 @@ __snip__remove_snip_line() {
 }
 
 
+__snip__get_snippet_fq_name() {
+  local snippet
+  snippet="${1:?Missing snippet as param}"
+  local config_file=~/.config/snip/settings.ini
+
+  # snippet is already fully qualified, nothing else to do
+  if [[ $snippet =~ ^http ]]; then
+    echo fully >&2
+    echo "$snippet"
+    return 0
+  fi
+
+  if [ ! -f "$config_file" ]; then
+    echo "Snippet is not fully qualified and there is no setting file ($config_file) with 'base_url' set." >&2
+    return 1
+  fi
+
+  local base_url
+  base_url=$(grep -Po "^(?<=base_url=).+" "$config_file")
+  if [ -z "$base_url" ]; then
+    echo "Could not find 'base_url' setting in $config_file" >&2
+    return 1
+  fi
+
+  echo "${base_url%/}/$snippet"
+}
+
+
 __snip__replace_snips() {
   local source_file
   local force
@@ -29,15 +57,17 @@ __snip__replace_snips() {
   local cache_dir=~/.cache/snip
   mkdir -p "$cache_dir"/
 
+  local fq_snippet
   for snippet in "${snippets[@]}"; do
+    fq_snippet=$(__snip__get_snippet_fq_name "$snippet") || return 1
     sniphash=$(echo -ne $snippet|md5sum|cut -d' ' -f1)
     new_file=$prefix_tmp-$((++i))-$filename
 
     if [[ $force == 1 || ! -f "$cache_dir"/${sniphash} ]]; then
-      echo "Downloading snippet: $snippet" >&2
-      curl --silent "$snippet" -o "$cache_dir"/${sniphash}
+      echo "Downloading snippet: $fq_snippet" >&2
+      curl --silent "$fq_snippet" -o "$cache_dir"/${sniphash}
       if [[ $(cut -f1 -d: "$cache_dir/${sniphash}") == 404 ]]; then
-        echo "Error downloading snippet: $snippet" >&2
+        echo "Error downloading snippet: $fq_snippet" >&2
         return 1
       fi
     fi
