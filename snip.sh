@@ -25,7 +25,7 @@ __snip__get_snippet_fq_name() {
   fi
 
   local base_url
-  base_url=$(grep -Po "^(?<=base_url=).+" "$config_file")
+  base_url=$(grep -Po "(?<=^base_url=).+" "$config_file")
   if [ -z "$base_url" ]; then
     echo "Could not find 'base_url' setting in $config_file" >&2
     return 1
