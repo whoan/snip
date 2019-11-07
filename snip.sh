@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-__snip__remove_snip_line() {
+__snip__remove_snip_lines() {
   local source_file
   source_file="${1:?Missing source file as param}"
-  sed "/^[ \t]*snip/d" "$source_file"
+  sed "/snip(/d" "$source_file"
 }
 
 
@@ -78,7 +78,7 @@ __snip__replace_snips() {
 
   local output_file=${prefix_tmp}${extension}
   rm "$prefix_tmp"
-  __snip__remove_snip_line "$source_file" > "$output_file"
+  __snip__remove_snip_lines "$source_file" > "$output_file"
   rm "$prefix_tmp"-*
 
   echo "$output_file"
