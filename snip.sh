@@ -7,6 +7,27 @@ __snip__remove_snip_lines() {
 }
 
 
+__snip__get_setting() {
+  local repo=https://github.com/whoan/snip
+  local setting_key
+  setting_key=${1:?You need to specify a setting}
+
+  local config_file=~/.config/snip/settings.ini
+  if [ ! -f "$config_file" ]; then
+    mkdir -p "${config_file%/*}" && touch "$config_file"
+  fi
+
+  local setting_value
+  setting_value=$(grep -Po "(?<=^$setting_key=).+" "$config_file")
+  if [ -z "$setting_value" ]; then
+    echo "You need to set '$setting_key' in $config_file . More info: $repo" >&2
+    return 1
+  fi
+
+  echo "$setting_value"
+}
+
+
 __snip__get_snippet_fq_name() {
   local snippet
   snippet="${1:?Missing snippet as param}"
@@ -18,19 +39,8 @@ __snip__get_snippet_fq_name() {
     return 0
   fi
 
-  local config_file=~/.config/snip/settings.ini
-  if [ ! -f "$config_file" ]; then
-    echo "Snippet is not fully qualified and there is no setting file ($config_file) with 'base_url' set." >&2
-    return 1
-  fi
-
   local base_url
-  base_url=$(grep -Po "(?<=^base_url=).+" "$config_file")
-  if [ -z "$base_url" ]; then
-    echo "Could not find 'base_url' setting in $config_file" >&2
-    return 1
-  fi
-
+  base_url=$(__snip__get_setting base_url) || return 1
   echo "${base_url%/}/$snippet"
 }
 
