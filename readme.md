@@ -20,7 +20,7 @@ bash
 
 ## Usage
 
-- Add `snip("$url")` (a.k.a. *the snip line*) anywhere in your code (usually as a comment) and the retrieved content will be placed after that line.
+- Add `snip("<url|path>")` (a.k.a. *the snip line*) anywhere in your code (usually as a comment) and the retrieved content will be placed after that line.
 - Prefix any command with `snip` (eg: `snip bash script.sh`) and the *snip lines* (if any) will be replaced with the content retrieved from the url provided.
 
 > Adding your *snip line* as a comment avoids your linter to complain about syntax (it works the same).
