@@ -7,7 +7,7 @@ __snip__remove_snip_line() {
 }
 
 
-get_snippet_fq_name() {
+__snip__get_snippet_fq_name() {
   local snippet
   snippet="${1:?Missing snippet as param}"
   local config_file=~/.config/snip/settings.ini
@@ -57,8 +57,9 @@ __snip__replace_snips() {
   local cache_dir=~/.cache/snip
   mkdir -p "$cache_dir"/
 
+  local fq_snippet
   for snippet in "${snippets[@]}"; do
-    fq_snippet=$(get_snippet_fq_name "$snippet") || return 1
+    fq_snippet=$(__snip__get_snippet_fq_name "$snippet") || return 1
     sniphash=$(echo -ne $snippet|md5sum|cut -d' ' -f1)
     new_file=$prefix_tmp-$((++i))-$filename
 
