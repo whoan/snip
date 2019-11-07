@@ -20,7 +20,7 @@ __snip__get_setting() {
   local setting_value
   setting_value=$(grep -Po "(?<=^$setting_key=).+" "$config_file")
   if [ -z "$setting_value" ]; then
-    echo "You need to set '$setting_key' in $config_file . More info: $repo" >&2
+    echo "You need to set '$setting_key' in $config_file -> More info: $repo" >&2
     return 1
   fi
 
