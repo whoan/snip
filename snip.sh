@@ -60,6 +60,24 @@ __snip__create_hash() {
 }
 
 
+__snip__download_snippet() {
+  local url
+  url=${1:?Please provide a url where to download snippet from}
+  local snippet_file
+  snippet_file=${2:?Please provide the name of the cached snippet file}
+  local force=$3
+
+  if [[ $force == 1 || ! -f "$snippet_file" ]]; then
+    echo "Downloading snippet: $url" >&2
+    curl --silent "$url" -o "$snippet_file"
+    if __snip__curl_http_error "$snippet_file" 404; then
+      echo "Error downloading snippet: $url" >&2
+      return 1
+    fi
+  fi
+}
+
+
 __snip__replace_snips() {
   local source_file
   local force
@@ -86,17 +104,10 @@ __snip__replace_snips() {
   for snippet in "${snippets[@]}"; do
     fq_snippet=$(__snip__get_snippet_fq_name "$snippet") || return 1
 
+    # download snippet if necessary
     local snippet_file
     snippet_file=$cache_dir/$(__snip__create_hash "$fq_snippet")
-    if [[ $force == 1 || ! -f "$snippet_file" ]]; then
-      echo "Downloading snippet: $fq_snippet" >&2
-      curl --silent "$fq_snippet" -o "$snippet_file"
-
-      if __snip__curl_http_error "$snippet_file" 404; then
-        echo "Error downloading snippet: $fq_snippet" >&2
-        return 1
-      fi
-    fi
+    __snip__download_snippet "$fq_snippet" "$snippet_file" $force || return 1
 
     # replace snips recursively
     local recursive_snippet_file
