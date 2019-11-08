@@ -53,6 +53,13 @@ __snip__curl_http_error() {
 }
 
 
+__snip__create_hash() {
+  local input
+  input=${1:?You must provide an input string to hash}
+  echo -ne "$input" | md5sum | cut -d' ' -f1
+}
+
+
 __snip__replace_snips() {
   local source_file
   local force
@@ -78,10 +85,9 @@ __snip__replace_snips() {
   local fq_snippet
   for snippet in "${snippets[@]}"; do
     fq_snippet=$(__snip__get_snippet_fq_name "$snippet") || return 1
-    local sniphash
-    sniphash=$(echo -ne "$fq_snippet"|md5sum|cut -d' ' -f1)
 
-    local snippet_file="$cache_dir"/${sniphash}
+    local snippet_file
+    snippet_file=$cache_dir/$(__snip__create_hash "$fq_snippet")
     if [[ $force == 1 || ! -f "$snippet_file" ]]; then
       echo "Downloading snippet: $fq_snippet" >&2
       curl --silent "$fq_snippet" -o "$snippet_file"
