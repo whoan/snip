@@ -34,7 +34,6 @@ __snip__get_snippet_fq_name() {
 
   # snippet is already fully qualified, nothing else to do
   if [[ $snippet =~ ^http ]]; then
-    echo fully >&2
     echo "$snippet"
     return 0
   fi
