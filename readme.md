@@ -58,6 +58,12 @@ You can set the following in `~/.config/snip/settings.ini`:
     //snip("https://raw.githubusercontent.com/whoan/snippets/master/cpp/print.hpp")
     ```
 
+## Features
+
+- It supports any type of text file
+- If a snippet has a snippet, those are replaced recursively too.
+- Once a snippet is downloaded, it is cached to fasten next uses of `snip`, unless yo provide `-f` to force redownloading.
+
 ## Examples
 
 It works with **any** type of file. Feel free to add examples through PRs.
