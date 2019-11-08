@@ -44,6 +44,15 @@ __snip__get_snippet_fq_name() {
 }
 
 
+__snip__curl_http_error() {
+  local content_file
+  content_file=${1:?Please provide the retrieved content by curl}
+  local status_code
+  status_code=${2:?Please provide an HTTP status code}
+  [[ $(cut -f1 -d: "$content_file") == "$status_code" ]]
+}
+
+
 __snip__replace_snips() {
   local source_file
   local force
@@ -75,7 +84,8 @@ __snip__replace_snips() {
     if [[ $force == 1 || ! -f "$cache_dir"/${sniphash} ]]; then
       echo "Downloading snippet: $fq_snippet" >&2
       curl --silent "$fq_snippet" -o "$cache_dir"/${sniphash}
-      if [[ $(cut -f1 -d: "$cache_dir/${sniphash}") == 404 ]]; then
+
+      if __snip__curl_http_error "$cache_dir/${sniphash}" 404; then
         echo "Error downloading snippet: $fq_snippet" >&2
         return 1
       fi
