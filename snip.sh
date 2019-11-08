@@ -81,8 +81,16 @@ __snip__replace_snips() {
       fi
     fi
 
-    sed -r "\@$snippet@r"<( cat "$cache_dir"/${sniphash} ) "$source_file" > "$new_file" || return 1
+    # replace snips recursively
+    local snippet_file
+    snippet_file=$(__snip__replace_snips "$cache_dir"/${sniphash})
+    sed -r "\@$snippet@r"<( cat "$snippet_file" ) "$source_file" > "$new_file" || return 1
     source_file="$new_file"
+
+    # clean intermediate tmp files
+    if [ "$snippet_file" != "$cache_dir"/${sniphash} ]; then
+      rm "$snippet_file"
+    fi
   done
 
   local output_file=${prefix_tmp}${extension}
