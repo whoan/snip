@@ -78,8 +78,8 @@ __snip__replace_snips() {
   local fq_snippet
   for snippet in "${snippets[@]}"; do
     fq_snippet=$(__snip__get_snippet_fq_name "$snippet") || return 1
-    sniphash=$(echo -ne $snippet|md5sum|cut -d' ' -f1)
-    new_file=$prefix_tmp-$((++i))-$filename
+    local sniphash
+    sniphash=$(echo -ne "$fq_snippet"|md5sum|cut -d' ' -f1)
 
     local snippet_file="$cache_dir"/${sniphash}
     if [[ $force == 1 || ! -f "$snippet_file" ]]; then
@@ -95,6 +95,7 @@ __snip__replace_snips() {
     # replace snips recursively
     local recursive_snippet_file
     recursive_snippet_file=$(__snip__replace_snips "$snippet_file" $force)
+    local new_file=$prefix_tmp-$((++i))-$filename
     sed -r "\@$snippet@r"<( cat "$recursive_snippet_file" ) "$source_file" > "$new_file" || return 1
     source_file="$new_file"
 
