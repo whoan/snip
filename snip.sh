@@ -80,8 +80,8 @@ __snip__download_snippet() {
 
 __snip__replace_snips() {
   local source_file
-  local force
   source_file="${1:?Missing source file as param}"
+  local force
   force=$2
 
   mapfile -t snippets < <(grep -Po '(^|(?<=[^[:alnum:]]))(?<=snip\(")[^"]+' "$source_file")
@@ -100,6 +100,7 @@ __snip__replace_snips() {
   local cache_dir=~/.cache/snip
   mkdir -p "$cache_dir"/
 
+  local snippet
   for snippet in "${snippets[@]}"; do
     # get full url of the snippet
     local snippet_url
@@ -184,10 +185,9 @@ snip() {
 
   declare -a params=( "$@" )
   local i
-
   for (( i=0; i < ${#params[@]}; ++i )); do
     # only valid files are processed
-    param="${params[$i]}"
+    local param="${params[$i]}"
     if __snip__is_text_file "$param"; then
       params[$i]=$(__snip__replace_snips "$param" $force) || return 1
     fi
