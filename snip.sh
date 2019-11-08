@@ -28,7 +28,7 @@ __snip__get_setting() {
 }
 
 
-__snip__get_snippet_fq_name() {
+__snip__get_snippet_url() {
   local snippet
   snippet="${1:?Missing snippet as param}"
 
@@ -61,17 +61,17 @@ __snip__create_hash() {
 
 
 __snip__download_snippet() {
-  local url
-  url=${1:?Please provide a url where to download snippet from}
+  local snippet_url
+  snippet_url=${1:?Please provide a url where to download snippet from}
   local snippet_file
   snippet_file=${2:?Please provide the name of the cached snippet file}
   local force=$3
 
   if [[ $force == 1 || ! -f "$snippet_file" ]]; then
-    echo "Downloading snippet: $url" >&2
-    curl --silent "$url" -o "$snippet_file"
+    echo "Downloading snippet: $snippet_url" >&2
+    curl --silent "$snippet_url" -o "$snippet_file"
     if __snip__curl_http_error "$snippet_file" 404; then
-      echo "Error downloading snippet: $url" >&2
+      echo "Error downloading snippet: $snippet_url" >&2
       return 1
     fi
   fi
@@ -100,14 +100,15 @@ __snip__replace_snips() {
   local cache_dir=~/.cache/snip
   mkdir -p "$cache_dir"/
 
-  local fq_snippet
   for snippet in "${snippets[@]}"; do
-    fq_snippet=$(__snip__get_snippet_fq_name "$snippet") || return 1
+    # get full url of the snippet
+    local snippet_url
+    snippet_url=$(__snip__get_snippet_url "$snippet") || return 1
 
     # download snippet if necessary
     local snippet_file
-    snippet_file=$cache_dir/$(__snip__create_hash "$fq_snippet")
-    __snip__download_snippet "$fq_snippet" "$snippet_file" $force || return 1
+    snippet_file=$cache_dir/$(__snip__create_hash "$snippet_url")
+    __snip__download_snippet "$snippet_url" "$snippet_file" $force || return 1
 
     # replace snips recursively
     local recursive_snippet_file
