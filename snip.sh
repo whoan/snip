@@ -113,7 +113,7 @@ __snip__replace_snips() {
 
     # replace snips recursively
     local recursive_snippet_file
-    recursive_snippet_file=$(__snip__replace_snips "$snippet_file" $force)
+    recursive_snippet_file=$(__snip__replace_snips "$snippet_file" $force) || return 1
     local new_file=$prefix_tmp-$((++i))-$filename
     sed -r "\@$snippet@r"<( cat "$recursive_snippet_file" ) "$source_file" > "$new_file" || return 1
     source_file="$new_file"
