@@ -134,6 +134,12 @@ EOF
     echo "You need 'curl' to run this script" >&2
     return 1
   fi
+
+  # alpine does not include file by default
+  if ! which file > /dev/null 2>&1; then
+    echo "You need 'file' command to run this script" >&2
+    return 1
+  fi
 }
 
 
