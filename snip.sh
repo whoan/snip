@@ -81,25 +81,26 @@ __snip__replace_snips() {
     sniphash=$(echo -ne $snippet|md5sum|cut -d' ' -f1)
     new_file=$prefix_tmp-$((++i))-$filename
 
-    if [[ $force == 1 || ! -f "$cache_dir"/${sniphash} ]]; then
+    local snippet_file="$cache_dir"/${sniphash}
+    if [[ $force == 1 || ! -f "$snippet_file" ]]; then
       echo "Downloading snippet: $fq_snippet" >&2
-      curl --silent "$fq_snippet" -o "$cache_dir"/${sniphash}
+      curl --silent "$fq_snippet" -o "$snippet_file"
 
-      if __snip__curl_http_error "$cache_dir/${sniphash}" 404; then
+      if __snip__curl_http_error "$snippet_file" 404; then
         echo "Error downloading snippet: $fq_snippet" >&2
         return 1
       fi
     fi
 
     # replace snips recursively
-    local snippet_file
-    snippet_file=$(__snip__replace_snips "$cache_dir"/${sniphash})
-    sed -r "\@$snippet@r"<( cat "$snippet_file" ) "$source_file" > "$new_file" || return 1
+    local recursive_snippet_file
+    recursive_snippet_file=$(__snip__replace_snips "$snippet_file" $force)
+    sed -r "\@$snippet@r"<( cat "$recursive_snippet_file" ) "$source_file" > "$new_file" || return 1
     source_file="$new_file"
 
-    # clean intermediate tmp files
-    if [ "$snippet_file" != "$cache_dir"/${sniphash} ]; then
-      rm "$snippet_file"
+    # clean intermediate tmp file it there was recursive snippet
+    if [ "$recursive_snippet_file" != "$snippet_file" ]; then
+      rm "$recursive_snippet_file"
     fi
   done
 
