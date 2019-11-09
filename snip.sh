@@ -91,6 +91,12 @@ __snip__replace_snips() {
     return
   fi
 
+  if (( ++__snip_replacements > 20 )); then
+    echo "Too many snip replacements." >&2
+    echo "Please check your code for cyclic dependencies or open an issue: https://github.com/whoan/snip/issues/new" >&2
+    return 1
+  fi
+
   local filename=${source_file##*/}
   local root_filename="${filename%.*}"
   local extension="${filename#"$root_filename"}"
@@ -187,6 +193,7 @@ __snip() {
     # only valid files are processed
     local param="${params[$i]}"
     if __snip__is_text_file "$param"; then
+      __snip_replacements=0
       params[$i]=$(__snip__replace_snips "$param" $force) || return 1
     fi
   done
