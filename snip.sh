@@ -102,10 +102,10 @@ __snip__replace_snips() {
   local extension="${filename#"$root_filename"}"
 
   local prefix_tmp
-  prefix_tmp=$(command -p mktemp --suffix=-snip-) || return 1
+  prefix_tmp=$(command -p mktemp -t snip.XXXXXX) || return 1
   # remove old snip tmp files and the one just created as we only need the file name.
   # using --dry-run is unsafe. not doing so, we also test access to tmp filesystem. see man mktemp
-  rm "${prefix_tmp%/*}"/*-snip-*
+  rm "${prefix_tmp%/*}"/snip.*
 
   local cache_dir=~/.cache/snip
   mkdir -p "$cache_dir"/
@@ -131,7 +131,7 @@ __snip__replace_snips() {
     source_file="$new_file"
   done
 
-  local output_file=${prefix_tmp}output${extension}
+  local output_file=${prefix_tmp}-output${extension}
   __snip__remove_snip_lines "$source_file" > "$output_file"
   echo "$output_file"
 }
