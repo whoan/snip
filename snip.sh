@@ -28,6 +28,24 @@ __snip__get_setting() {
 }
 
 
+__snip__fix_home_directory() {
+  local param
+  param=${1:?Missing param}
+  if [[ $param =~ ^~/ ]]; then
+    echo ${param/\~/$HOME}
+  else
+    echo $param
+  fi
+}
+
+
+__snip__is_local_snippet() {
+  local snippet
+  snippet="${1:?Missing snippet as param}"
+  [[ $snippet =~ ^(\.|~|/) ]]
+}
+
+
 __snip__get_snippet_url() {
   local snippet
   snippet="${1:?Missing snippet as param}"
@@ -114,14 +132,18 @@ __snip__replace_snips() {
   for ((i=0; i < n_snippets; ++i)); do
     local snippet="${snippets[$i]}"
 
-    # get full url of the snippet
-    local snippet_url
-    snippet_url=$(__snip__get_snippet_url "$snippet") || return 1
-
-    # download snippet if necessary
     local snippet_file
-    snippet_file=$cache_dir/$(__snip__create_hash "$snippet_url")
-    __snip__download_snippet "$snippet_url" "$snippet_file" $force || return 1
+    if __snip__is_local_snippet "$snippet"; then
+      snippet_file=$(__snip__fix_home_directory "$snippet")
+    else
+      # get full url of the snippet
+      local snippet_url
+      snippet_url=$(__snip__get_snippet_url "$snippet") || return 1
+
+      # download snippet if necessary
+      snippet_file=$cache_dir/$(__snip__create_hash "$snippet_url")
+      __snip__download_snippet "$snippet_url" "$snippet_file" $force || return 1
+    fi
 
     # replace snips recursively
     local recursive_snippet_file
