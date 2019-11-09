@@ -93,13 +93,18 @@ __snip__replace_snips() {
   local filename=${source_file##*/}
   local root_filename="${filename%.*}"
   local extension="${filename#"$root_filename"}"
+
+
   local prefix_tmp
-  prefix_tmp=$(command -p mktemp) || return 1
-  local i=0
+  prefix_tmp=$(command -p mktemp --suffix=-snip-) || return 1
+  # remove old snip tmp files and the one just created as we only need the file name.
+  # using --dry-run is unsafe. not doing so, we also test access to tmp filesystem. see man mktemp
+  rm "${prefix_tmp%/*}"/*-snip-*
 
   local cache_dir=~/.cache/snip
   mkdir -p "$cache_dir"/
 
+  local i=0
   local snippet
   for snippet in "${snippets[@]}"; do
     # get full url of the snippet
@@ -117,18 +122,10 @@ __snip__replace_snips() {
     local new_file=$prefix_tmp-$((++i))-$filename
     sed -r "\@$snippet@r"<( cat "$recursive_snippet_file" ) "$source_file" > "$new_file" || return 1
     source_file="$new_file"
-
-    # clean intermediate tmp file it there was recursive snippet
-    if [ "$recursive_snippet_file" != "$snippet_file" ]; then
-      rm "$recursive_snippet_file"
-    fi
   done
 
-  local output_file=${prefix_tmp}${extension}
-  rm "$prefix_tmp"
+  local output_file=${prefix_tmp}output${extension}
   __snip__remove_snip_lines "$source_file" > "$output_file"
-  rm "$prefix_tmp"-*
-
   echo "$output_file"
 }
 
