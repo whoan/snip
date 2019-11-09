@@ -85,7 +85,8 @@ __snip__replace_snips() {
   force=$2
 
   mapfile -t snippets < <(grep -Po '(^|(?<=[^[:alnum:]]))(?<=snip\(")[^"]+' "$source_file")
-  if (( ${#snippets[@]} == 0 )); then
+  local n_snippets=${#snippets[@]}
+  if (( n_snippets == 0 )); then
     echo $source_file
     return
   fi
@@ -93,7 +94,6 @@ __snip__replace_snips() {
   local filename=${source_file##*/}
   local root_filename="${filename%.*}"
   local extension="${filename#"$root_filename"}"
-
 
   local prefix_tmp
   prefix_tmp=$(command -p mktemp --suffix=-snip-) || return 1
@@ -104,9 +104,10 @@ __snip__replace_snips() {
   local cache_dir=~/.cache/snip
   mkdir -p "$cache_dir"/
 
-  local i=0
-  local snippet
-  for snippet in "${snippets[@]}"; do
+  local i
+  for ((i=0; i < n_snippets; ++i)); do
+    local snippet="${snippets[$i]}"
+
     # get full url of the snippet
     local snippet_url
     snippet_url=$(__snip__get_snippet_url "$snippet") || return 1
@@ -119,7 +120,7 @@ __snip__replace_snips() {
     # replace snips recursively
     local recursive_snippet_file
     recursive_snippet_file=$(__snip__replace_snips "$snippet_file" $force) || return 1
-    local new_file=$prefix_tmp-$((++i))-$filename
+    local new_file=$prefix_tmp-$i--$filename
     sed -r "\@$snippet@r"<( cat "$recursive_snippet_file" ) "$source_file" > "$new_file" || return 1
     source_file="$new_file"
   done
