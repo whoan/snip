@@ -172,7 +172,7 @@ EOF
 }
 
 
-snip() {
+__snip() {
   __snip__can_run "$@" || return 1
 
   local force

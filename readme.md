@@ -11,11 +11,25 @@ Add code snippets to your code directly from the web.
 ### Bash
 
 ```bash
-# download script and place it in your initialization file
-curl --fail "https://raw.githubusercontent.com/whoan/snip/master/snip.sh" > snip.sh &&
-  echo "[ -f \"$PWD/\"snip.sh ] && source \"$PWD/\"snip.sh" >> .bashrc
-# start a new session to take changes
-bash
+# download script and place it whenever you want
+curl --fail "https://raw.githubusercontent.com/whoan/snip/master/snip.sh" > snip.sh
+```
+
+```bash
+# now place this handy function in your shell rc file
+snip() {
+  # source snip on demand to avoid slowing down your session startup. you're welcome :)
+  if ! declare -f __snip > /dev/null; then
+    local path_to_snip="/full/path/to/snip.sh"  # HEY! CHANGE THIS PLEASE!!!
+    if ! [ -f "$path_to_snip" ]; then
+      echo "$path_to_snip was not found" >&2
+      return 1
+    fi
+    source "$path_to_snip"
+  fi
+  __snip "$@"
+}
+# start a new shell session to take changes
 ```
 
 ## Usage
