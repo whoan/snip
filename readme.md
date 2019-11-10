@@ -1,6 +1,6 @@
 # Snip
 
-Add code snippets to your code directly from the web.
+Add code snippets to your code directly from the web (or your local filesystem).
 
 ## Installation
 
@@ -34,7 +34,7 @@ snip() {
 
 ## Usage
 
-- Add `snip("<url|path>")` (a.k.a. *the snip line*) anywhere in your code (usually as a comment) and the retrieved content will be placed after that line.
+- Add `snip("<url|local_path>")` (a.k.a. *the snip line*) anywhere in your code (usually as a comment) and the retrieved content will be placed after that line.
 - Prefix any command with `snip` (eg: `snip bash script.sh`) and the *snip lines* (if any) will be replaced with the content retrieved from the url provided.
 
 > Adding your *snip line* as a comment avoids your linter to complain about syntax (it works the same).
@@ -100,6 +100,20 @@ int main() {
 ```bash
 $ snip g++ examples/main.cpp && ./a.out
 > Hello World
+```
+
+If you set `base_url` in your settings, you can also shorten the reference to the snippet like this:
+
+```cpp
+//snip("snippet.hpp")  // snip will download $base_url/snippet.hpp
+```
+
+And if you want to reference a snippet in your file system, just provide the path to the file:
+
+```cpp
+//snip("/home/you/snippet.hpp") // full path
+//snip("./snippet.hpp")         // relative path
+//snip("~/snippet.hpp")         // you can even reference your home path with ~
 ```
 
 ### Bash
