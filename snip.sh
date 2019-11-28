@@ -102,7 +102,8 @@ __snip__replace_snips() {
   local force
   force=$2
 
-  mapfile -t snippets < <(grep -Po '(^|(?<=[^[:alnum:]]))(?<=snip\(")[^"]+' "$source_file")
+  # get snippet urls/paths with line numbers as a prefix
+  mapfile -t snippets < <(grep -nPo '(^|(?<=[^[:alnum:]]))(?<=snip\(")[^"]+' "$source_file")
   local n_snippets=${#snippets[@]}
   if (( n_snippets == 0 )); then
     echo $source_file
@@ -119,18 +120,25 @@ __snip__replace_snips() {
   local root_filename="${filename%.*}"
   local extension="${filename#"$root_filename"}"
 
-  local prefix_tmp
-  prefix_tmp=$(command -p mktemp -t snip.XXXXXX) || return 1
-  # remove old snip tmp files and the one just created as we only need the file name.
+  # remove old snip tmp files
   # using --dry-run is unsafe. not doing so, we also test access to tmp filesystem. see man mktemp
-  rm "${prefix_tmp%/*}"/snip.*
+  local tmp_file
+  tmp_file=$(command -p mktemp -t snip.XXXXXX) || return 1
+  rm "${tmp_file%/*}"/snip.*
+
+  # show proper number of line and filename on c/c++ compilation errors
+  cp "$source_file" "$tmp_file"
+  if __snip__is_c_or_cpp_file "$source_file"; then
+    __snip__process_c_or_cpp_file "$source_file" "$tmp_file" "${snippets[@]}" || return 1
+  fi
+  source_file=$tmp_file
 
   local cache_dir=~/.cache/snip
   mkdir -p "$cache_dir"/
 
   local i
   for ((i=0; i < n_snippets; ++i)); do
-    local snippet="${snippets[$i]}"
+    local snippet="${snippets[$i]/*:/}"
 
     local snippet_file
     if __snip__is_local_snippet "$snippet"; then
@@ -148,12 +156,12 @@ __snip__replace_snips() {
     # replace snips recursively
     local recursive_snippet_file
     recursive_snippet_file=$(__snip__replace_snips "$snippet_file" $force) || return 1
-    local new_file=$prefix_tmp-$i--$filename
+    local new_file=$tmp_file-$i--$filename
     sed -r "\@$snippet@r"<( cat "$recursive_snippet_file" ) "$source_file" > "$new_file" || return 1
     source_file="$new_file"
   done
 
-  local output_file=${prefix_tmp}-output${extension}
+  local output_file=${tmp_file}-output${extension}
   __snip__remove_snip_lines "$source_file" > "$output_file"
   echo "$output_file"
 }
@@ -169,6 +177,36 @@ __snip__is_text_file() {
   local filename
   filename=${1:?Missing filename by param}
   __snip__is_regular_file "$filename" && [[ $(file -i -- "$filename" 2> /dev/null) =~ text/ ]]
+}
+
+
+__snip__is_c_or_cpp_file() {
+  local filename
+  filename=${1:?Missing filename by param}
+  [[ $(file -i -- "$filename" 2> /dev/null) =~ text/x-c[\+\;] ]]
+}
+
+
+__snip__process_c_or_cpp_file() {
+  local source_file
+  source_file=${1:?Missing source file as param}
+  shift
+  local tmp_file
+  tmp_file=${1:?Missing tmp file as param}
+  shift
+  : ${1:?Missing snippets as params}
+
+  sed -i.bak \
+    "1i #line 1 \"$source_file\"" \
+    "$tmp_file" || return 1
+
+  local snippet
+  for snippet in "$@"; do
+    sed -i.bak \
+      -e "${snippet/:*/}i #line 1 \"${snippet/*:/}\"" \
+      -e "${snippet/:*/}a #line $((${snippet/:*/} + 1)) \"$source_file\"" \
+      "$tmp_file" || return 1
+  done
 }
 
 
