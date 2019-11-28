@@ -102,7 +102,8 @@ __snip__replace_snips() {
   local force
   force=$2
 
-  mapfile -t snippets < <(grep -Po '(^|(?<=[^[:alnum:]]))(?<=snip\(")[^"]+' "$source_file")
+  # get snippet urls/paths with line numbers as a prefix
+  mapfile -t snippets < <(grep -nPo '(^|(?<=[^[:alnum:]]))(?<=snip\(")[^"]+' "$source_file")
   local n_snippets=${#snippets[@]}
   if (( n_snippets == 0 )); then
     echo $source_file
@@ -130,7 +131,7 @@ __snip__replace_snips() {
 
   local i
   for ((i=0; i < n_snippets; ++i)); do
-    local snippet="${snippets[$i]}"
+    local snippet="${snippets[$i]/*:/}"
 
     local snippet_file
     if __snip__is_local_snippet "$snippet"; then
