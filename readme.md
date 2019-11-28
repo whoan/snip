@@ -77,7 +77,7 @@ You can set the following in `~/.config/snip/settings.ini`:
 - It supports any type of text file
 - If a snippet has a snippet, those are replaced recursively too.
 - Once a snippet is downloaded, it is cached to fasten next uses of `snip`, unless yo provide `-f` to force redownloading.
-- For C/C++ files, after PR #16, you will see proper line numbers and filenames on compilation errors. You will even know if the error is inside a snippet (see [Issue #15](https://github.com/whoan/snip/issues/15) as an example).
+- For C/C++ files, after [PR #16](https://github.com/whoan/snip/pull/16), you will see proper line numbers and filenames on compilation errors. You will even know if the error is inside a snippet (see [Issue #15](https://github.com/whoan/snip/issues/15) as an example).
 
 ## Examples
 
