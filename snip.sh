@@ -126,6 +126,13 @@ __snip__replace_snips() {
   tmp_file=$(command -p mktemp -t snip.XXXXXX) || return 1
   rm "${tmp_file%/*}"/snip.*
 
+  # show proper number of line and filename on c/c++ compilation errors
+  cp "$source_file" "$tmp_file"
+  if __snip__is_c_or_cpp_file "$source_file"; then
+    __snip__process_c_or_cpp_file "$source_file" "$tmp_file" "${snippets[@]}" || return 1
+  fi
+  source_file=$tmp_file
+
   local cache_dir=~/.cache/snip
   mkdir -p "$cache_dir"/
 
@@ -170,6 +177,36 @@ __snip__is_text_file() {
   local filename
   filename=${1:?Missing filename by param}
   __snip__is_regular_file "$filename" && [[ $(file -i -- "$filename" 2> /dev/null) =~ text/ ]]
+}
+
+
+__snip__is_c_or_cpp_file() {
+  local filename
+  filename=${1:?Missing filename by param}
+  [[ $(file -i -- "$filename" 2> /dev/null) =~ text/x-c[\+\;] ]]
+}
+
+
+__snip__process_c_or_cpp_file() {
+  local source_file
+  source_file=${1:?Missing source file as param}
+  shift
+  local tmp_file
+  tmp_file=${1:?Missing tmp file as param}
+  shift
+  : ${1:?Missing snippets as params}
+
+  sed -i.bak \
+    "1i #line 1 \"$source_file\"" \
+    "$tmp_file" || return 1
+
+  local snippet
+  for snippet in "$@"; do
+    sed -i.bak \
+      -e "${snippet/:*/}i #line 1 \"${snippet/*:/}\"" \
+      -e "${snippet/:*/}a #line $((${snippet/:*/} + 1)) \"$source_file\"" \
+      "$tmp_file" || return 1
+  done
 }
 
 
