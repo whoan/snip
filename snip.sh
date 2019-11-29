@@ -95,6 +95,13 @@ __snip__download_snippet() {
   fi
 }
 
+__snip__check_too_many_replacements() {
+  if (( ++__snip_replacements > 20 )); then
+    echo "Too many snip replacements." >&2
+    echo "Please check your code for cyclic dependencies or open an issue: https://github.com/whoan/snip/issues/new" >&2
+    return 1
+  fi
+}
 
 __snip__replace_snips() {
   local source_file
@@ -113,11 +120,7 @@ __snip__replace_snips() {
   # remove leading characters taken by grep
   snippets=( "${snippets[@]//:[^[:alnum:]]*\"/:}" )
 
-  if (( ++__snip_replacements > 20 )); then
-    echo "Too many snip replacements." >&2
-    echo "Please check your code for cyclic dependencies or open an issue: https://github.com/whoan/snip/issues/new" >&2
-    return 1
-  fi
+  __snip__check_too_many_replacements || return 1
 
   local filename=${source_file##*/}
   local root_filename="${filename%.*}"
