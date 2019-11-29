@@ -103,12 +103,14 @@ __snip__replace_snips() {
   force=$2
 
   # get snippet urls/paths with line numbers as a prefix
-  mapfile -t snippets < <(grep -nPo '(^|(?<=[^[:alnum:]]))(?<=snip\(")[^"]+' "$source_file")
+  mapfile -t snippets < <(grep -nPo '(?<=(^|(?<![[:alnum:]]))snip)[^[:alnum:]]*"[^"]+' "$source_file")
   local n_snippets=${#snippets[@]}
   if (( n_snippets == 0 )); then
     echo $source_file
     return
   fi
+  # remove leading characters taken by grep
+  snippets=( "${snippets[@]//:[^[:alnum:]]*\"/:}" )
 
   if (( ++__snip_replacements > 20 )); then
     echo "Too many snip replacements." >&2
