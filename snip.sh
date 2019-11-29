@@ -106,6 +106,7 @@ __snip__replace_snips() {
   mapfile -t snippets < <(grep -nPo '(?<=(^|(?<![[:alnum:]]))snip)[^[:alnum:]]*"[^"]+' "$source_file")
   local n_snippets=${#snippets[@]}
   if (( n_snippets == 0 )); then
+    echo "snip has no work to do - skipped" >&2
     echo $source_file
     return
   fi
