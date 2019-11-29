@@ -3,7 +3,7 @@
 __snip__remove_snip_lines() {
   local source_file
   source_file="${1:?Missing source file as param}"
-  sed "/snip(/d" "$source_file"
+  sed '/^[^[:alnum:]]*snip[^[:alnum:]]*"/d' "$source_file"
 }
 
 
