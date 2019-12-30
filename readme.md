@@ -2,6 +2,8 @@
 
 Add code snippets to your code directly from the web (or your local filesystem).
 
+Useful to maintain a repo of snippets as I do in https://github.com/whoan/snippets/.
+
 ## Installation
 
 ### Dependencies
