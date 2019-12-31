@@ -155,7 +155,10 @@ __snip__replace_snips() {
 
       # download snippet if necessary
       snippet_file=$cache_dir/$(__snip__create_hash "$snippet_url")
-      __snip__download_snippet "$snippet_url" "$snippet_file" $force || return 1
+      if ! __snip__download_snippet "$snippet_url" "$snippet_file" $force; then
+        rm -f "$snippet_file"
+        return 1
+      fi
     fi
 
     # replace snips recursively
