@@ -61,6 +61,11 @@ __snip__get_snippet_url() {
   echo "${base_url%/}/$snippet"
 }
 
+__snip__is_external_snippet() {
+  local snippet
+  snippet="${1:?Missing snippet as param}"
+  [[ $snippet =~ ^(~|/|\/) ]]
+}
 
 __snip__curl_http_error() {
   local content_file
