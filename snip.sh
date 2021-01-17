@@ -214,12 +214,14 @@ __snip__process_c_or_cpp_file() {
     "$tmp_file" || return 1
 
   local snippet
+  local snippet_line
   for snippet in "$@"; do
+    snippet_line=${snippet/:*/}
     sed -i.bak \
-      -e "${snippet/:*/}i #line 1 \"${snippet/*:/}\"" \
-      -e "${snippet/:*/}a #line $((${snippet/:*/} + 1)) \"$source_file\"" \
+      "${snippet_line}i #line 1 \"${snippet/*:/}\"" \
       "$tmp_file" || return 1
   done
+  sed -i.bak "${snippet_line}a #line $snippet_line \"$source_file\"" "$tmp_file" || return 1
 }
 
 
